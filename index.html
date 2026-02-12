@@ -1,106 +1,27 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Оплата подписки</title>
-    <script src="https://telegram.org"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата доступа</title>
     <script src="https://unpkg.com"></script>
     <style>
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: flex-start; 
-            padding-top: 40px;
-            height: 100vh; 
-            margin: 0; 
-            background-color: #141419; 
-            color: white; 
-            text-align: center; 
-        }
-        h2 { margin-bottom: 10px; font-size: 22px; }
-        p { color: #8e8e93; font-size: 14px; margin-bottom: 30px; padding: 0 20px; }
-        
-        #ton-connect { 
-            margin-bottom: 20px; 
-            min-height: 44px;
-        }
-        
-        .pay-btn { 
-            padding: 16px 32px; 
-            font-size: 18px; 
-            border-radius: 14px; 
-            border: none; 
-            background: #0088cc; 
-            color: white; 
-            cursor: pointer; 
-            font-weight: bold; 
-            width: 80%;
-            max-width: 300px;
-            transition: background 0.2s;
-        }
-        .pay-btn:active { background: #0077b3; }
+        body { font-family: sans-serif; background-color: #1c1c1d; color: white; text-align: center; padding: 20px; }
+        #ton-connect-button { display: flex; justify-content: center; margin-top: 20px; }
     </style>
 </head>
 <body>
-    <h2>Оплата доступа</h2>
-    <p>Подключите кошелек и подтвердите транзакцию</p>
+    <h2>Оплата доступа в канал</h2>
+    <p>Подключите кошелек и нажмите кнопку оплаты</p>
     
-    <!-- Сначала кнопка подключения -->
-    <div id="ton-connect"></div>
-    
-    <!-- Потом кнопка оплаты (скрыта до подключения) -->
-    <button id="pay-button" class="pay-btn" style="display: none;" onclick="pay()">Оплатить 1 TON</button>
+    <!-- Вот это место, где появится кнопка -->
+    <div id="ton-connect-button"></div>
 
     <script>
-        const tonConnectUI = new TONConnectUI.TonConnectUI({
-  manifestUrl: 'https://creator777wwww.github.io',
-            buttonRootId: 'ton-connect'
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://creator777wwww.github.io',
+            buttonRootId: 'ton-connect-button'
         });
-
-        // Настройка возврата в бота после оплаты
-        tonConnectUI.uiOptions = {
-            twaReturnUrl: 'https://t.me'
-        };
-
-        // Следим за статусом кошелька
-        tonConnectUI.onStatusChange(wallet => {
-            const payBtn = document.getElementById('pay-button');
-            if (wallet) {
-                payBtn.style.display = 'block';
-            } else {
-                payBtn.style.display = 'none';
-            }
-        });
-
-        async function pay() {
-            const transaction = {
-                validUntil: Math.floor(Date.now() / 1000) + 600,
-                messages: [{
-                    address: "UQCGcEe4e7jxCQhfxLRVaR9Lc9uaWKQ1mRHMxedZP9THDfpp",
-                    amount: "1000000000" // 1 TON в нанотонах
-                }]
-            };
-
-            try {
-                const result = await tonConnectUI.sendTransaction(transaction);
-                // Отправляем результат в бот
-                if (window.Telegram && window.Telegram.WebApp) {
-                    window.Telegram.WebApp.sendData(result.boc);
-                    window.Telegram.WebApp.close();
-                }
-            } catch (e) {
-                alert("Ошибка: " + e.message);
-            }
-        }
-        
-        // Сообщаем Telegram, что приложение готово
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.ready();
-            window.Telegram.WebApp.expand(); // Разворачиваем на весь экран
-        }
     </script>
 </body>
 </html>
